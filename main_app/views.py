@@ -29,32 +29,7 @@ def finches_detail(request, finch_id):
   feeding_form = FeedingForm()
   return render(request, 'finches/detail.html', { 'finch': finch, 'feeding_form': feeding_form, 'toys': toys_finch_doesnt_have })
 
-def add_feeding(request, finch_id):
-  form = FeedingForm(request.POST)
-  if form.is_valid():
-    new_feeding = form.save(commit=False)
-    new_feeding.finch_id = finch_id
-    new_feeding.save()
-  return redirect('finches_detail', finch_id=finch_id)
 
-@login_required
-def assoc_toy(request, finch_id, toy_id):
-  Finch.objects.get(id=finch_id).toys.add(toy_id)
-  return redirect('finches_detail', finch_id=finch_id)
-
-def signup(request):
-  error_message = ''
-  if request.method == 'POST':
-    form = UserCreationForm(request.POST)
-    if form.is_valid():
-      user = form.save()
-      login(request, user)
-      return redirect('cats_index')
-    else:
-      error_message = 'Invalid sign up - try again'
-    form = UserCreationForm()
-  context = {'form': form, 'error_message': error_message}
-  return render(request, 'signup.html', context)
 
 class FinchCreate(LoginRequiredMixin, CreateView):
   model = Finch
@@ -72,6 +47,17 @@ class FinchUpdate(LoginRequiredMixin, UpdateView):
 class FinchDelete(LoginRequiredMixin, DeleteView):
   model = Finch
   success_url = '/finches/'
+
+
+@login_required
+def add_feeding(request, finch_id):
+  form = FeedingForm(request.POST)
+  if form.is_valid():
+    new_feeding = form.save(commit=False)
+    new_feeding.finch_id = finch_id
+    new_feeding.save()
+  return redirect('finches_detail', finch_id=finch_id)
+
 
 class ToyCreate(CreateView):
   model = Toy
@@ -91,3 +77,23 @@ class ToyDelete(LoginRequiredMixin, DeleteView):
   model = Toy
   success_url = '/toys/'
 
+
+@login_required
+def assoc_toy(request, finch_id, toy_id):
+  Finch.objects.get(id=finch_id).toys.add(toy_id)
+  return redirect('finches_detail', finch_id=finch_id)
+
+
+def signup(request):
+  error_message = ''
+  if request.method == 'POST':
+    form = UserCreationForm(request.POST)
+    if form.is_valid():
+      user = form.save()
+      login(request, user)
+      return redirect('cats_index')
+    else:
+      error_message = 'Invalid sign up - try again'
+  form = UserCreationForm()
+  context = {'form': form, 'error_message': error_message}
+  return render(request, 'signup.html', context)
