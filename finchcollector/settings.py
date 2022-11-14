@@ -10,6 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+import environ
+env = environ.Env()
+environ.Env.read_env()
+
 from pathlib import Path
 import os
 
@@ -21,10 +25,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-sscqlba=2rsrjl-um+8%9jo4+^6xk$nkus6(p$yzn=lsq136--'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG') == 'True' 
 
 ALLOWED_HOSTS = []
 
@@ -133,3 +137,12 @@ LOGOUT_REDIRECT_URL = 'home'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+
+
+import django_heroku
+django_heroku.settings(locals())
+
+DEBUG_PROPAGATE_EXCEPTIONS = True
