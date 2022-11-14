@@ -25,10 +25,10 @@
         <a href="{% url 'finches_detail' finch.id %}">
         <div class="card-content">
           <div class="card-img-container">
-            <img 
+            {% comment %} <img 
               src="{% static '' %}" 
               alt="A skater boy finch"
-            >
+            > {% endcomment %}
           </div>
           <h2 class="card-title">{{ finch.name }}</h2>
           {% if finch.age > 0 %}
